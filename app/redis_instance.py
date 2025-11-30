@@ -1,6 +1,7 @@
 from threading import Lock
 from redis import Redis
-    
+from config import redis_port, redis_host, redis_password
+
 class SingletonMeta(type):
     _instance = None
     _lock: Lock = Lock()
@@ -15,7 +16,7 @@ class SingletonMeta(type):
   
 class Redis_App(metaclass=SingletonMeta):
     def __init__(self):
-        self._redis = Redis(host="127.0.0.1", port=6379, password="pa33w0r5", decode_responses=True)
+        self._redis = Redis(host=redis_host, port=redis_port, password=redis_password, decode_responses=True)
     
     def get_str(self, key):
         return self._redis.get(key)

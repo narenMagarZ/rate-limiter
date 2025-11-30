@@ -1,8 +1,8 @@
 from fastapi import FastAPI, APIRouter, Header
 from fastapi.middleware.cors import CORSMiddleware
-import uvicorn
 import time
 from redis_instance import Redis_App
+from config import token_capacity, time_interval, app_base_url
 
 app = FastAPI(title="Simple http server")
 api_router = APIRouter()
@@ -10,24 +10,20 @@ redis_app = Redis_App()
 
 app.add_middleware(
   CORSMiddleware, 
-  allow_origins="http://localhost:8000", 
+  allow_origins=[app_base_url], 
   allow_methods=["*"], 
   allow_headers=["*"], 
   allow_credentials=True
 )
 
-@api_router.get("/")
-def read_root():
-  return {"message": "hello, world!", "status": "success"}
-
 @api_router.get("/health")
 def health_check():
-  return {"status": "healthy", "message": "server status is okay"}
+  return {"status": "success"}
 
 @api_router.get("/limited")
 def get_users(x_client_id: str = Header(..., alias="X-Client-ID")):
-  capacity = 100
-  refill_rate = 1.666
+  capacity = token_capacity
+  refill_rate = capacity / time_interval
   current_time = int(time.time())
   bucket_key = f"bucket:{x_client_id}"
   try:
@@ -57,7 +53,7 @@ def get_users(x_client_id: str = Header(..., alias="X-Client-ID")):
         "token": capacity - 1,
         "last_refill_time": current_time 
       })
-      return {"success": True, "client_id": x_client_id}
+      return {"success": True}
   except Exception as e:
     print("Error", e)
     return {"success": False}
