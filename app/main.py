@@ -1,8 +1,10 @@
 from fastapi import FastAPI, APIRouter, Header
 from fastapi.middleware.cors import CORSMiddleware
 import time
-from redis_instance import Redis_App
-from config import token_capacity, time_interval, app_base_url
+from app.redis_instance import Redis_App
+from app.config import token_capacity, time_interval, app_base_url, environment
+
+print("Rate limiting server running on", environment, "environment")
 
 app = FastAPI(title="Simple http server")
 api_router = APIRouter()
@@ -10,7 +12,7 @@ redis_app = Redis_App()
 
 app.add_middleware(
   CORSMiddleware, 
-  allow_origins=[app_base_url], 
+  allow_origins=app_base_url, 
   allow_methods=["*"], 
   allow_headers=["*"], 
   allow_credentials=True

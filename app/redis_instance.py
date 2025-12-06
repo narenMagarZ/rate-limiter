@@ -1,6 +1,6 @@
 from threading import Lock
 from redis import Redis
-from config import redis_port, redis_host, redis_password
+from app.config import redis_port, redis_host, redis_password
 
 class SingletonMeta(type):
     _instance = None
@@ -16,7 +16,7 @@ class SingletonMeta(type):
   
 class Redis_App(metaclass=SingletonMeta):
     def __init__(self):
-        self._redis = Redis(host=redis_host, port=redis_port, password=redis_password, decode_responses=True)
+        self._redis = Redis(host=redis_host, port=redis_port, decode_responses=True)
     
     def get_str(self, key):
         return self._redis.get(key)
@@ -27,8 +27,6 @@ class Redis_App(metaclass=SingletonMeta):
     def hset(self, name, mapping):
         return self._redis.hset(name=name, mapping=mapping)
     
-
-
     def hget(self, name, key):
         return self._redis.hget(name=name, key=key)
     
