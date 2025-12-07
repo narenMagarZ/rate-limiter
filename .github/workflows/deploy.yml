@@ -6,5 +6,19 @@ on:
       - master
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v5
+      - name: ssh
+        if: ${{ github.ref == 'refs/heads/master' }}
+        uses: fifsky/ssh-action@master
+        with:
+          cmd: |
+            cd /home/ubuntu/projects/
+            sudo docker compose up -d --build
+          host: ${{ secrets.HOST }}
+          user: ${{ secrets.USER }}
+          key: ${{ secrets.PRIVATE_KEY }}
+        
