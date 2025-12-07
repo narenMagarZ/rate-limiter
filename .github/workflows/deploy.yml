@@ -17,7 +17,7 @@ jobs:
         with:
           cmd: |
             cd /home/ubuntu/projects/
-            sudo docker compose up -d --build
+            docker compose up -d --build
           host: ${{ secrets.HOST }}
           user: ${{ secrets.USER }}
           key: ${{ secrets.PRIVATE_KEY }}
